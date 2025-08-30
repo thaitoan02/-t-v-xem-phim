@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ movie.title }}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <script src="{{ url_for('static', filename='js/movie.js') }}" defer></script>
+</head>
+<body>
+    <h1>{{ movie.title }}</h1>
+    <img src="{{ url_for('static', filename='images/' + movie.image) }}" alt="{{ movie.title }}">
+    <p>{{ movie.description }}</p>
+
+    <form method="POST">
+        <h3>Select Seats</h3>
+        <div class="seats">
+            {% for seat in seats %}
+            <label>
+                <input type="checkbox" name="seats" value="{{ seat.id }}" {% if seat.status == 'booked' %}disabled{% endif %}> 
+                {{ seat.seat_number }}
+            </label>
+            {% endfor %}
+        </div>
+        <button type="submit">Book Tickets</button>
+    </form>
+</body>
+</html>
