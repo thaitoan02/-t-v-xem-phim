@@ -1,0 +1,54 @@
+body {
+    font-family: Arial, sans-serif;
+    /* Apply the uploaded background to the whole page (covers viewport). */
+    background-image: url("/static/images/bg_uploaded.jpg");
+    background-size: cover;
+    background-position: center center;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    min-height: 100vh;
+}
+
+/* Background image utility - place image files under static/images/ */
+.page-bg {
+    /* Use the uploaded background image */
+    background-image: url("/static/images/bg_uploaded.jpg");
+    background-size: cover;
+    background-position: center center;
+    background-repeat: no-repeat;
+    min-height: 100vh;
+}
+
+h1 {
+    text-align: center;
+}
+
+.movies-list {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.movie-card {
+    margin: 20px;
+    border: 1px solid #ccc;
+    padding: 20px;
+    width: 200px;
+}
+
+.seats {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+button {
+    background-color: #4CAF50;
+    color: white;
+    padding: 10px;
+    border: none;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: #45a049;
+}
