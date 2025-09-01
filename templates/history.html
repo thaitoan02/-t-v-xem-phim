@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="vi">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Lịch sử đặt vé</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  </head>
+  <body>
+    <div class="container mt-4">
+      <h2>Lịch sử đặt vé</h2>
+      {% if tickets %}
+      <table class="table table-striped">
+        <thead>
+          <tr>
+            <th>Mã vé</th>
+            <th>Phim</th>
+            <th>Ghế</th>
+            <th>Tổng tiền</th>
+            <th>Thời gian</th>
+            <th>Hành động</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for t in tickets %}
+          <tr>
+            <td>{{ t.id }}</td>
+            <td>{{ t.movie.title }}</td>
+            <td>{{ t.seats }}</td>
+            <td>${{ '%.2f'|format(t.total_price) }}</td>
+            <td>{{ t.created_at }}</td>
+            <td>
+              <a href="{{ url_for('ticket_view', ticket_id=t.id) }}" class="btn btn-sm btn-primary">Xem</a>
+              <a href="{{ url_for('ticket_pdf', ticket_id=t.id) }}" class="btn btn-sm btn-success">PDF</a>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+      {% else %}
+      <p>Bạn chưa có vé đặt nào.</p>
+      {% endif %}
+      <a href="{{ url_for('index') }}" class="btn btn-link">Về trang chủ</a>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  </body>
+</html>
