@@ -1,0 +1,102 @@
+<!doctype html>
+<html lang="vi">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Admin Dashboard</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  </head>
+  <body>
+  <div class="container mt-4 page-bg">
+      <h2>Quản trị hệ thống</h2>
+      <div class="row">
+        <div class="col-md-6">
+          <h4>Thêm phim</h4>
+          <form method="post" action="{{ url_for('admin_add_movie') }}">
+            <div class="mb-2">
+              <input class="form-control" name="title" placeholder="Tiêu đề" required>
+            </div>
+            <div class="mb-2">
+              <textarea class="form-control" name="description" placeholder="Mô tả" required></textarea>
+            </div>
+            <div class="mb-2">
+              <input class="form-control" name="image" placeholder="URL ảnh (tuỳ chọn)">
+            </div>
+            <button class="btn btn-success">Thêm phim</button>
+          </form>
+
+          <h4 class="mt-4">Danh sách phim</h4>
+          <ul class="list-group">
+            {% for m in movies %}
+            <li class="list-group-item">
+              <form method="post" action="{{ url_for('admin_edit_movie', movie_id=m.id) }}" class="row g-2 align-items-center">
+                <div class="col-12 col-md-5">
+                  <input class="form-control" name="title" value="{{ m.title }}" required />
+                </div>
+                <div class="col-12 col-md-4">
+                  <input class="form-control" name="image" placeholder="URL ảnh" value="{{ m.image }}" />
+                </div>
+                <div class="col-12 col-md-8 mt-2">
+                  <textarea class="form-control" name="description" placeholder="Mô tả">{{ m.description }}</textarea>
+                </div>
+                <div class="col-auto mt-2">
+                  <button class="btn btn-primary btn-sm">Lưu</button>
+                </div>
+              </form>
+              <form method="post" action="{{ url_for('admin_delete_movie', movie_id=m.id) }}" style="display:inline-block; margin-left:8px;">
+                <button class="btn btn-danger btn-sm">Xóa</button>
+              </form>
+            </li>
+            {% endfor %}
+          </ul>
+        </div>
+
+        <div class="col-md-6">
+          <h4>Người dùng</h4>
+          <table class="table">
+            <thead><tr><th>ID</th><th>Username</th><th>Admin</th><th>Hành động</th></tr></thead>
+            <tbody>
+              {% for u in users %}
+              <tr>
+                <td>{{ u.id }}</td>
+                <td>{{ u.username }}</td>
+                <td>{{ 'Yes' if u.is_admin else 'No' }}</td>
+                <td>
+                  <form method="post" action="{{ url_for('admin_toggle_user', user_id=u.id) }}" style="display:inline-block">
+                    <button class="btn btn-sm btn-warning">Toggle Admin</button>
+                  </form>
+                </td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+
+          <h4 class="mt-4">Vé đã đặt</h4>
+          <table class="table">
+            <thead><tr><th>ID</th><th>Phim</th><th>Người đặt</th><th>Ghế</th><th>Tổng</th><th>Hành động</th></tr></thead>
+            <tbody>
+              {% for t in tickets %}
+              <tr>
+                <td>{{ t.id }}</td>
+                <td>{{ t.movie.title }}</td>
+                <td>{{ t.user.username }}</td>
+                <td>{{ t.seats }}</td>
+                <td>${{ '%.2f'|format(t.total_price) }}</td>
+                <td>
+                  <form method="post" action="{{ url_for('admin_delete_ticket', ticket_id=t.id) }}" style="display:inline-block">
+                    <button class="btn btn-sm btn-danger">Xóa vé</button>
+                  </form>
+                </td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <a href="{{ url_for('index') }}" class="btn btn-link mt-3">Về trang chủ</a>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  </body>
+</html>
