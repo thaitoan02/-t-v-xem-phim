@@ -81,3 +81,25 @@ def register():
         return redirect(url_for('login'))
 
     return render_template('register.html')
+
+# API: register (returns JSON)
+@app.route('/api/register', methods=['POST'])
+def api_register():
+    data = request.get_json() or {}
+    username = data.get('username')
+    password = data.get('password')
+    if not username or not password:
+        return jsonify({'msg': 'username and password required'}), 400
+    if User.query.filter_by(username=username).first():
+        return jsonify({'msg': 'user exists'}), 400
+    hashed = pwd_context.hash(password)
+    new_user = User(username=username, password=hashed)
+    db.session.add(new_user)
+    try:
+        db.session.commit()
+    except Exception:
+        db.session.rollback()
+        return jsonify({'msg': 'db error'}), 500
+    access_token = create_access_token(identity=new_user.id)
+    refresh_token = create_refresh_token(identity=new_user.id)
+    return jsonify({'access_token': access_token, 'refresh_token': refresh_token, 'user': {'id': new_user.id, 'username': new_user.username}}), 201
