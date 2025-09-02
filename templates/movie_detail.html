@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="vi">
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<title>Chi tiết phim</title>
+		<link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+		<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+	</head>
+	<body>
+		<div class="container mt-4">
+			<a href="{{ url_for('index') }}">&larr; Quay lại</a>
+			<div class="row mt-3">
+				<div class="col-md-6">
+					{% if movie.image %}
+					<img src="{{ movie.image }}" class="img-fluid" alt="{{ movie.title }}">
+					{% endif %}
+				</div>
+				<div class="col-md-6">
+					<h2>{{ movie.title }}</h2>
+					<p>{{ movie.description }}</p>
+
+					<h4>Chọn ghế</h4>
+					<form method="post" action="{{ url_for('movie_detail', movie_id=movie.id) }}">
+						<div class="row">
+							{% for seat in seats %}
+							<div class="col-2 mb-2">
+								<div class="form-check">
+									<input class="form-check-input" type="checkbox" name="seats" value="{{ seat.id }}" id="seat{{ seat.id }}" {% if seat.status != 'available' %}disabled{% endif %}>
+									<label class="form-check-label" for="seat{{ seat.id }}">{{ seat.seat_number }} {% if seat.status != 'available' %}(Đã đặt){% endif %}</label>
+								</div>
+							</div>
+							{% endfor %}
+						</div>
+						<button type="submit" class="btn btn-primary mt-3">Đặt ghế</button>
+					</form>
+				</div>
+			</div>
+		</div>
+		<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+	</body>
+</html>
