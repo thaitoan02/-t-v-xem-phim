@@ -103,3 +103,32 @@ def api_register():
     access_token = create_access_token(identity=new_user.id)
     refresh_token = create_refresh_token(identity=new_user.id)
     return jsonify({'access_token': access_token, 'refresh_token': refresh_token, 'user': {'id': new_user.id, 'username': new_user.username}}), 201
+
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+    if request.method == 'POST':
+        username = request.form['username']
+        password = request.form['password']
+
+        user = User.query.filter_by(username=username).first()
+        verified = False
+        if user:
+            try:
+                verified = pwd_context.verify(password, user.password)
+            except UnknownHashError:
+                # legacy/plaintext password stored; try direct compare and upgrade
+                if user.password == password:
+                    verified = True
+                    try:
+                        user.password = pwd_context.hash(password)
+                        db.session.add(user)
+                        db.session.commit()
+                    except Exception:
+                        db.session.rollback()
+        if user and verified:
+            login_user(user)
+            return redirect(url_for('index'))
+        else:
+            return 'Invalid credentials'
+
+    return render_template('login.html')
